@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <title>DataNest</title>
+    <meta name="description" content="" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="stylesheet" href="" />
+    <style>
+      body {
+        background-repeat: none;
+        background-size: cover;
+      }
+      body {
+        font-family: Arial, sans-serif;
+        background-color: #190439;
+        color: #ffffff;
+        margin: 0;
+        display: flex;
+        flex-direction: column;
+        row-gap: 100px;
+      }
+
+      .page-heading {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 15px;
+        padding-left: 100px;
+        padding-right: 90px;
+      }
+
+      h1 {
+        font-size: 2rem;
+        transition: 0.3s;
+      }
+
+      .login-button {
+        background: rgb(63, 94, 251);
+        background: radial-gradient(
+          circle,
+          rgba(63, 94, 251, 1) 0%,
+          rgba(70, 181, 252, 1) 100%
+        );
+        border: none;
+        color: #fff;
+        padding: 30px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 1rem;
+        transition: 0.3s;
+      }
+      .login-button:hover {
+        box-shadow: 0px 0px 7px #46b5fc;
+      }
+
+      /*Make the register button same as login button and make them appear next to each other*/
+      .register-button {
+        background: rgb(63, 94, 251);
+        background: radial-gradient(
+          circle,
+          rgba(63, 94, 251, 1) 0%,
+          rgba(70, 181, 252, 1) 100%
+        );
+        border: none;
+        color: #fff;
+        padding: 30px;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        border-radius: 5px;
+        font-weight: bold;
+        font-size: 1rem;
+        transition: 0.3s;
+      }
+      .register-button:hover {
+        box-shadow: 0px 0px 7px #46b5fc;
+      }
+
+      h1:hover {
+        color: rgb(63, 94, 251);
+        color: radial-gradient(
+          circle,
+          rgba(63, 94, 251, 1) 0%,
+          rgba(70, 181, 252, 1) 100%
+        );
+      }
+
+      p {
+        align-self: center;
+        font-size: 1.5rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="page-heading">
+      <h1>CPMS</h1>
+      <form action="/login" ,method="post">
+        <button type="submit" class="login-button">Login</button>
+      </form>
+      <form action="/register" ,method="post">
+        <button type="submit" class="register-button">Register</button>
+      </form>
+    </div>
+    <p>
+      A website to connect Authors to Reviewers and manage Conferences and
+      Papers
+    </p>
+
+    <script src="" async defer>
+      // On clicking the login button, the user is redirected to the login page for the flask app
+      // On clicking the register button, the user is redirected to the register page for the flask app
+      // Implement the redirection using the form action attribute
+    </script>
+  </body>
+</html>
