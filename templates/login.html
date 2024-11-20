@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Login Page</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+      }
+
+      body {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: #f3f4f6;
+      }
+
+      .container {
+        background-color: #ffffff;
+        padding: 2rem;
+        width: 100%;
+        max-width: 400px;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+      }
+
+      h2 {
+        text-align: center;
+        color: #333;
+        margin-bottom: 1.5rem;
+      }
+
+      .role-selection {
+        display: flex;
+        justify-content: space-around;
+        margin-bottom: 1.5rem;
+      }
+
+      .role-selection button {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 5px;
+        background-color: #4caf50;
+        color: #fff;
+        font-weight: bold;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      .role-selection button:hover {
+        background-color: #45a049;
+      }
+
+      .form {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .form h3 {
+        text-align: center;
+        margin-bottom: 1rem;
+        color: #333;
+      }
+
+      .form label {
+        margin-top: 1rem;
+        color: #555;
+      }
+
+      .form input {
+        width: 100%;
+        padding: 0.75rem;
+        margin-top: 0.5rem;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+      }
+
+      button[type="submit"] {
+        background-color: #4caf50;
+        color: #fff;
+        border: none;
+        padding: 0.75rem;
+        margin-top: 1.5rem;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: background-color 0.3s ease;
+      }
+
+      button[type="submit"]:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h2>Login</h2>
+
+      <!-- Role Selection -->
+      <div class="role-selection">
+        <button onclick="showForm('authorLoginForm')">Author</button>
+        <button onclick="showForm('reviewerLoginForm')">Reviewer</button>
+      </div>
+
+      <!-- Author Login Form -->
+      <form
+        id="authorLoginForm"
+        class="form"
+        style="display: none"
+        onsubmit="submitAuthorLogin(event)"
+        method="post"
+      >
+        <h3>Author Login</h3>
+        <label for="authorName">Name:</label>
+        <input
+          type="text"
+          id="authorName"
+          placeholder="Enter your name"
+          required
+        />
+
+        <br /><br />
+        <label for="authorPassword">Password:</label>
+        <input
+          type="password"
+          id="authorPassword"
+          placeholder="Enter your password"
+          required
+        />
+
+        <button type="submit">Login as Author</button>
+      </form>
+
+      <!-- Reviewer Login Form -->
+      <form
+        id="reviewerLoginForm"
+        class="form"
+        style="display: none"
+        onsubmit="submitReviewerLogin(event)"
+        method="post"
+      >
+        <h3>Reviewer Login</h3>
+        <label for="reviewerName">Name:</label>
+        <input
+          type="text"
+          id="reviewerName"
+          placeholder="Enter your name"
+          required
+        />
+
+        <br /><br />
+        <!-- <label for="reviewerConferenceID">Conference ID:</label>
+        <input
+          type="text"
+          id="reviewerConferenceID"
+          placeholder="Enter your Conference ID"
+          required
+        /> -->
+
+        <br /><br />
+        <label for="reviewerPassword">Password:</label>
+        <input
+          type="password"
+          id="reviewerPassword"
+          placeholder="Enter your password"
+          required
+        />
+
+        <button type="submit">Login as Reviewer</button>
+      </form>
+    </div>
+
+    <script>
+      function showForm(formId) {
+        // Hide both forms initially
+        document.getElementById("authorLoginForm").style.display = "none";
+        document.getElementById("reviewerLoginForm").style.display = "none";
+
+        // Display the selected form
+        document.getElementById(formId).style.display = "block";
+      }
+
+      async function submitAuthorLogin(event) {
+        event.preventDefault();
+        const data = {
+          role: "author",
+          name: document.getElementById("authorName").value,
+          password: document.getElementById("authorPassword").value,
+        };
+
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        alert(result.message);
+        if (result.redirect) {
+          window.location.href = result.redirect; // Redirect based on the URL in the response
+        }
+      }
+
+      async function submitReviewerLogin(event) {
+        event.preventDefault();
+        const data = {
+          role: "reviewer",
+          name: document.getElementById("reviewerName").value,
+          password: document.getElementById("reviewerPassword").value,
+        };
+
+        const response = await fetch("/login", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(data),
+        });
+
+        const result = await response.json();
+        alert(result.message);
+        if (result.redirect) window.location.href = result.redirect;
+      }
+    </script>
+  </body>
+</html>

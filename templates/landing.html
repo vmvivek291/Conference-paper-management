@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CPMS</title>
+    <style>
+        :root {
+            --primary-blue: #2563eb;
+            --primary-green: #10b981;
+            --hover-blue: #1d4ed8;
+            --hover-green: #059669;
+        }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8f8f8;
+            color: #1f2937;
+            margin: 0;
+            min-height: 100vh;
+        }
+        .page-heading {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.5rem 5rem;
+            background-color: #ffffff;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .logo {
+            font-size: 1.875rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+        .auth-buttons {
+            display: flex;
+            gap: 1rem;
+        }
+        .button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-weight: 600;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .primary-button {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+        .primary-button:hover {
+            background-color: var(--hover-blue);
+        }
+        .secondary-button {
+            background-color: var(--primary-green);
+            color: white;
+        }
+        .secondary-button:hover {
+            background-color: var(--hover-green);
+        }
+        .main-content {
+            padding: 2rem 1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .search-section {
+            width: 100%;
+            background-color: white;
+            padding: 2rem 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-title {
+            font-size: 2rem;
+            color: #0066FF;
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            align-self: flex-start;
+            margin-left: 5%;
+            border-bottom: 2px solid #0066FF;
+            padding-bottom: 0.5rem;
+        }
+
+        .search-wrapper {
+            width: 90%;
+            max-width: 1200px;
+            background-color: #f1f1f1;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .search-input {
+            flex-grow: 1;
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-input:focus {
+            outline: none;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-filter {
+            padding: 0.75rem 1rem;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 1rem;
+            min-width: 200px;
+            background-color: white;
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+            cursor: pointer;
+        }
+
+        .search-button {
+            background-color: #0066FF;
+            color: white;
+            padding: 0.75rem 2rem;
+            border-radius: 0.5rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: background-color 0.2s ease;
+        }
+
+        .search-button:hover {
+            background-color: #0052cc;
+        }
+        .quote {
+            text-align: center;
+            font-size: 1.5rem;
+            color: #4b5563;
+            margin: 2rem 0;
+            font-style: italic;
+            font-weight: 300;
+        }
+        .organizer-buttons {
+            display: flex;
+            gap: 1.5rem;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        .organizer-button {
+            background-color: white;
+            color: var(--primary-blue);
+            border: 2px solid var(--primary-blue);
+            padding: 1rem 2.5rem;
+            border-radius: 0.5rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .organizer-button:hover {
+            background-color: var(--primary-blue);
+            color: white;
+            transform: translateY(-2px);
+        }
+        .search-results {
+            background-color: #ffffff;
+            padding: 2rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 800px;
+            margin-top: 2rem;
+            display: none;
+            animation: slideDown 0.3s ease-out;
+        }
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .search-results table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        .search-results th,
+        .search-results td {
+            padding: 1rem;
+            text-align: left;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .search-results th {
+            background-color: #f8fafc;
+            font-weight: 600;
+        }
+        .btn-view-pdf {
+            background-color: #2563eb;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.875rem;
+            transition: background-color 0.2s ease;
+            display: inline-block;
+            text-align: center;
+            min-width: 80px;
+        }
+        .btn-view-pdf:hover {
+            background-color: #1d4ed8;
+        }
+        
+        .search-results td:last-child {
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header class="page-heading">
+        <h1 class="logo">CPMS</h1>
+        <div class="auth-buttons">
+            <form action="/login" method="get">
+                <button type="submit" class="button primary-button">Login</button>
+            </form>
+            <form action="/register" method="get">
+                <button type="submit" class="button secondary-button">Register</button>
+            </form>
+        </div>
+    </header>
+    <main class="main-content">
+        <section class="search-section">
+            <h2 class="search-title">Search Papers</h2>
+            <form id="searchForm" method="post">
+                <div class="search-wrapper">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search paper in conference" />
+                    <select class="search-filter" id="searchFilter">
+                        <option selected disabled>Select filter...</option>
+                        <option value="author">Author Name</option>
+                        <option value="title">Paper Title</option>
+                        <option value="category">Paper Category</option>
+                    </select>
+                    <button type="submit" class="search-button">Search</button>
+                </div>
+            </form>
+            <div class="search-results" id="searchResults">
+                <table id="searchResultsTable">
+                    <thead>
+                        <tr>
+                            <th>Author Name</th>
+                            <th>Conference Name</th>
+                            <th>Paper Title</th>
+                            <th>Paper Category</th>
+                            <th>Manuscript</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </section>
+        
+        <p class="quote">A pathway into research</p>
+        
+        <div class="organizer-buttons">
+            <form id="form-ICAI" method="post">
+                <button type="submit" class="organizer-button" onclick="setFormAction('ICAI')">ICAI</button>
+            </form>
+            <form id="form-QCS" method="post">
+                <button type="submit" class="organizer-button" onclick="setFormAction('QCS')">QCS</button>
+            </form>
+            <form id="form-DSS" method="post">
+                <button type="submit" class="organizer-button" onclick="setFormAction('DSS')">DSS</button>
+            </form>
+        </div>
+    </main>
+    <script>
+        function setFormAction(organizerName) {
+            const form = document.getElementById(`form-${organizerName}`);
+            form.action = `/landing/${organizerName}`;
+        }
+        
+        document.getElementById("searchForm").addEventListener("submit", async function (e) {
+            e.preventDefault();
+
+            const searchTerm = document.getElementById("searchInput").value;
+            const searchFilter = document.getElementById("searchFilter").value;
+            const submitButton = e.target.querySelector(".search-button");
+
+            if (!searchTerm || !searchFilter) {
+                alert("Please enter a search term and select a filter.");
+                return;
+            }
+
+            submitButton.disabled = true;
+            submitButton.innerHTML = "Searching...";
+
+            try {
+                const response = await fetch("/search", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ searchTerm, searchFilter })
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    updateTable(data);
+                } else {
+                    alert("Error fetching results. Please try again.");
+                }
+            } catch (error) {
+                console.error("Search error:", error);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = "Search";
+            }
+        });
+
+        function updateTable(data) {
+            const tbody = document.querySelector("#searchResultsTable tbody");
+            const resultsSection = document.getElementById("searchResults");
+            tbody.innerHTML = "";
+
+            if (data.length > 0) {
+                resultsSection.style.display = "block";
+                data.forEach(item => {
+                    const row = `
+                        <tr>
+                            <td>${item.Author_Name || ""}</td>
+                            <td>${item.Conference_Name || ""}</td>
+                            <td>${item.Paper_Title || ""}</td>
+                            <td>${item.Paper_Category || ""}</td>
+                            <td>${item.Manuscript ? `<a href="/view_pdf/${item.Paper_ID}" class="btn-view-pdf">View PDF</a>` : "N/A"}</td>
+                        </tr>
+                    `;
+                    tbody.insertAdjacentHTML("beforeend", row);
+                });
+            } else {
+                resultsSection.style.display = "block";
+                tbody.innerHTML = `<tr><td colspan="5">No results found.</td></tr>`;
+            }
+        }
+    </script>
+</body>
+</html>

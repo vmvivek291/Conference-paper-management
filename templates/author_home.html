@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Author Dashboard</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        .welcome-banner {
+            background-color: #f8f9fa;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        .profile-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+        .profile-item {
+            padding: 10px;
+            background-color: #fff;
+            border: 1px solid #eee;
+            border-radius: 4px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 15px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #f8f9fa;
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #007bff;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            border: none;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        .btn:hover {
+            background-color: #0056b3;
+        }
+        select {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Welcome Section -->
+        <div class="welcome-banner">
+            <h1>Welcome, {{ author.name }}!</h1>
+            <div class="profile-details">
+                <div class="profile-item">
+                    <strong>Author ID:</strong> {{ author.id }}
+                </div>
+                <div class="profile-item">
+                    <strong>Age:</strong> {{ author.age }}
+                </div>
+                <div class="profile-item">
+                    <strong>Email:</strong> {{ author.email }}
+                </div>
+                <div class="profile-item">
+                    <strong>Bio:</strong> {{ author.bio }}
+                </div>
+            </div>
+            <a href="{{ url_for('author_profile', author_id=author.id) }}" class="btn">View Full Profile</a>
+        </div>
+
+        <!-- Submit Paper Section -->
+        <div class="section">
+            <h2>Submit New Paper</h2>
+            <form action="{{ url_for('select_conference', author_id=author.id) }}" method="POST">
+                <select name="conference_id" required>
+                    <option value="">Select a Conference</option>
+                    {% for conf in conferences %}
+                    <option value="{{ conf[0] }}">
+                        {{ conf[1] }} - {{ conf[2] }} ({{ conf[3].strftime('%Y-%m-%d') }})
+                    </option>
+                    {% endfor %}
+                </select>
+                <button type="submit" class="btn">Proceed to Upload</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>

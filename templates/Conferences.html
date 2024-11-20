@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Conference Proceedings</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      .table-hover tbody tr:hover {
+        background-color: #f5f5f5;
+        cursor: pointer;
+      }
+      .conference-link {
+        color: #000;
+        text-decoration: none;
+      }
+      .conference-link:hover {
+        color: #007bff;
+      }
+      .search-container {
+        background-color: #e9ecef;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+      }
+      .section-heading {
+        margin-top: 40px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #007bff;
+        color: #007bff;
+      }
+      .search-results {
+        display: none;
+        margin-top: 30px;
+      }
+      .btn-view-pdf {
+        color: #007bff;
+        text-decoration: underline;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container mt-5">
+      <!-- Conferences List Section -->
+      <h2 class="section-heading">{{ organizer }} Conferences</h2>
+      <div class="table-responsive">
+        {% if conferences %}
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th scope="col">Conference Name</th>
+              <th scope="col">Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for conference in conferences %}
+            <tr>
+              <td>{{ conference.Name }}</td>
+              <td>
+                <a
+                  href="/proceedings/{{ conference.Conference_ID }}"
+                  class="btn btn-primary btn-sm"
+                >
+                  View Conference
+                </a>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        {% else %}
+        <div class="alert alert-info" role="alert">
+          No conferences found for {{ organizer }}.
+        </div>
+        {% endif %}
+      </div>
+
+      <!-- Search Section -->
+      <h2 class="section-heading">Search Papers</h2>
+      <div class="search-container">
+        <form id="searchForm" class="row g-3">
+          <div class="col-md-6">
+            <input
+              type="text"
+              class="form-control"
+              id="searchInput"
+              placeholder="Search paper in conference"
+              aria-label="Search input"
+            />
+          </div>
+          <div class="col-md-4">
+            <select
+              class="form-select"
+              id="searchFilter"
+              aria-label="Search filter"
+            >
+              <option selected disabled>Select filter...</option>
+              <option value="author">Author Name</option>
+              <option value="title">Paper Title</option>
+              <option value="category">Paper Category</option>
+            </select>
+          </div>
+          <div class="col-md-2">
+            <button type="submit" class="btn btn-primary w-100">Search</button>
+          </div>
+        </form>
+      </div>
+
+      <!-- Search Results Section -->
+      <div class="search-results mt-4">
+        <h4>Search Results</h4>
+        <div class="table-responsive">
+          <table class="table table-hover" id="searchResultsTable">
+            <thead class="table-light">
+              <tr>
+                <th scope="col">Author Name</th>
+                <th scope="col">Conference Name</th>
+                <th scope="col">Paper Title</th>
+                <th scope="col">Paper Category</th>
+                <th scope="col">Manuscript</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Rows will be added here by JavaScript -->
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+      document
+        .getElementById("searchForm")
+        .addEventListener("submit", async function (e) {
+          e.preventDefault();
+
+          const searchTerm = document.getElementById("searchInput").value;
+          const searchFilter = document.getElementById("searchFilter").value;
+          const submitButton = this.querySelector('button[type="submit"]');
+
+          if (!searchTerm || !searchFilter) {
+            showErrorAlert("Please enter a search term and select a filter.");
+            return;
+          }
+
+          try {
+            // Show loading state
+            submitButton.innerHTML =
+              '<span class="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span> Searching...';
+            submitButton.disabled = true;
+
+            // Send POST request to backend
+            const response = await fetch("/search", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              body: JSON.stringify({
+                searchTerm: searchTerm,
+                searchFilter: searchFilter,
+              }),
+            });
+
+            if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            // Parse the JSON response
+            const data = await response.json();
+            updateTable(data);
+          } catch (error) {
+            console.error("Search error:", error);
+            showErrorAlert(
+              "An error occurred while searching. Please try again."
+            );
+          } finally {
+            // Reset button state
+            submitButton.innerHTML = "Search";
+            submitButton.disabled = false;
+          }
+        });
+
+      function updateTable(data) {
+        const tbody = document.querySelector("#searchResultsTable tbody");
+        const searchResultsSection = document.querySelector(".search-results");
+        tbody.innerHTML = ""; // Clear existing rows
+
+        if (data && data.length > 0) {
+          searchResultsSection.style.display = "block";
+          data.forEach((conference) => {
+            const row = `
+              <tr>
+                <td>${conference.Author_Name || ""}</td>
+                <td>${conference.Conference_Name || ""}</td>
+                <td>${conference.Paper_Title || ""}</td>
+                <td>${conference.Paper_Category || ""}</td>
+                <td>
+                  ${
+                    conference.Manuscript
+                      ? `<a href="/view_pdf/${conference.Paper_ID}" target="_blank" class="btn-view-pdf">View PDF</a>`
+                      : "N/A"
+                  }
+                </td>
+              </tr>
+            `;
+            tbody.insertAdjacentHTML("beforeend", row);
+          });
+        } else {
+          searchResultsSection.style.display = "block";
+          const noResultsRow = `
+            <tr>
+              <td colspan="5" class="text-center">No results found for your search.</td>
+            </tr>
+          `;
+          tbody.insertAdjacentHTML("beforeend", noResultsRow);
+        }
+      }
+
+      // Function to show error alert
+      function showErrorAlert(message) {
+        const alertHTML = `
+          <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            ${message}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        `;
+        document
+          .querySelector(".search-container")
+          .insertAdjacentHTML("afterend", alertHTML);
+      }
+    </script>
+  </body>
+</html>

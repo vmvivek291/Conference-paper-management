@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ICAI Conferences</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #ffffff;
+            color: #333333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            color: #190439;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .search-section {
+            background-color: #f5f5f5;
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 30px;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 15px;
+        }
+
+        input[type="text"], select {
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            flex: 1;
+        }
+
+        button {
+            background-color: #190439;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #2a0666;
+        }
+
+        .proceedings-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .proceedings-table th, .proceedings-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        .proceedings-table th {
+            background-color: #190439;
+            color: white;
+        }
+
+        .proceedings-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .proceedings-table tr:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>ICAI Conference Proceedings</h1>
+        
+        <div class="search-section">
+            <div class="search-container">
+                <input type="text" id="searchInput" placeholder="Enter search term...">
+                <select id="filterCategory">
+                    <option value="all">All Categories</option>
+                    <option value="author">Author Name</option>
+                    <option value="title">Paper Title</option>
+                    <option value="category">Paper Category</option>
+                    <option value="paper">Paper Name</option>
+                </select>
+                <button onclick="searchProceedings()">Search</button>
+            </div>
+        </div>
+
+        <table class="proceedings-table">
+            <thead>
+                <tr>
+                    <th>Conference ID</th>
+                    <th>ISSN</th>
+                    <th>Volume</th>
+                    <th>Pages</th>
+                    <th>Paper Title</th>
+                    <th>Authors</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            <tbody id="proceedingsBody">
+                <!-- Sample data -->
+                <tr>
+                    <td>C001</td>
+                    <td>ISSN001</td>
+                    <td>1</td>
+                    <td>120</td>
+                    <td>Machine Learning Applications in Healthcare</td>
+                    <td>John Doe, Jane Smith</td>
+                    <td>AI in Healthcare</td>
+                </tr>
+                <tr>
+                    <td>C002</td>
+                    <td>ISSN002</td>
+                    <td>1</td>
+                    <td>100</td>
+                    <td>Deep Learning for Natural Language Processing</td>
+                    <td>Alice Johnson</td>
+                    <td>NLP</td>
+                </tr>
+                <tr>
+                    <td>C003</td>
+                    <td>ISSN003</td>
+                    <td>1</td>
+                    <td>200</td>
+                    <td>Computer Vision Techniques in Robotics</td>
+                    <td>Bob Wilson, Carol Brown</td>
+                    <td>Computer Vision</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <script>
+        function searchProceedings() {
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+            const filterCategory = document.getElementById('filterCategory').value;
+            const rows = document.getElementById('proceedingsBody').getElementsByTagName('tr');
+
+            for (let row of rows) {
+                let cells = row.getElementsByTagName('td');
+                let matchFound = false;
+
+                if (filterCategory === 'all') {
+                    matchFound = Array.from(cells).some(cell => 
+                        cell.textContent.toLowerCase().includes(searchTerm)
+                    );
+                } else {
+                    // Map filter categories to column indices
+                    const categoryMap = {
+                        'author': 5,  // Authors column
+                        'title': 4,   // Paper Title column
+                        'category': 6, // Category column
+                        'paper': 4     // Paper Name column (same as title)
+                    };
+
+                    const cellIndex = categoryMap[filterCategory];
+                    if (cellIndex !== undefined) {
+                        matchFound = cells[cellIndex].textContent.toLowerCase().includes(searchTerm);
+                    }
+                }
+
+                row.style.display = matchFound ? '' : 'none';
+            }
+        }
+    </script>
+</body>
+</html>

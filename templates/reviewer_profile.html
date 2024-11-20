@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reviewer Profile</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
+    <style>
+        .profile-card {
+            max-width: 800px;
+            margin: 20px auto;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+
+        .profile-container {
+            display: flex;
+            gap: 30px;
+        }
+
+        .left-section {
+            flex: 0 0 200px;
+            text-align: center;
+        }
+
+        .photo-circle {
+            width: 120px;
+            height: 120px;
+            background-color: #f3f4f6;
+            border-radius: 50%;
+            margin: 0 auto 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .photo-circle svg {
+            width: 60px;
+            height: 60px;
+            color: #9ca3af;
+        }
+
+        .basic-info {
+            margin-top: 20px;
+        }
+
+        .info-item {
+            margin-bottom: 15px;
+        }
+
+        .label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .value {
+            font-weight: 500;
+            color: #1f2937;
+        }
+
+        .right-section {
+            flex: 1;
+            padding: 20px;
+            background-color: #f9fafb;
+            border-radius: 8px;
+        }
+
+        .conference-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 15px;
+        }
+
+        .conference-details {
+            color: #4b5563;
+        }
+
+        .conference-item {
+            margin-bottom: 10px;
+        }
+
+        .conference-label {
+            color: #6b7280;
+            font-size: 14px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+    <div class="flex min-h-screen">
+        <!-- Left Sidebar with Profile -->
+        <div class="w-80 bg-gray-50 min-h-screen">
+            <!-- Profile Section -->
+            <div class="profile-section m-4">
+                <div class="photo-circle">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                        <circle cx="12" cy="7" r="4"></circle>
+                    </svg>
+                </div>
+                <div class="basic-info">
+                    <div class="info-item">
+                        <div class="label">Reviewer ID</div>
+                        <div class="value">{{reviewer.Reviewer_ID}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Name</div>
+                        <div class="value">{{reviewer.Name}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Email</div>
+                        <div class="value text-sm">{{reviewer.Email}}</div>
+                    </div>
+                    <div class="info-item">
+                        <div class="label">Conference</div>
+                        <div class="value text-sm">{{reviewer.c_Name}}</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="flex-1 flex">
+            <!-- Papers List -->
+            <div class="w-1/3 bg-white shadow-lg p-6 overflow-y-auto">
+                <h2 class="text-2xl font-bold mb-6">Assigned Papers</h2>
+                <div class="space-y-4">
+                    {% for paper in assigned_papers %}
+                    <div class="border rounded p-4 hover:bg-gray-50 cursor-pointer"
+                         onclick="showPaperDetails('{{ paper.Paper_ID }}')">
+                        <h3 class="font-semibold text-lg">{{ paper.Title }}</h3>
+                        <p class="text-sm text-gray-600">Status: {{ paper.status }}</p>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+
+            <!-- Paper Details Area -->
+            <div class="flex-1 p-6">
+                {% for paper in assigned_papers %}
+                <div id="paper-{{ paper.Paper_ID }}" class="paper-details hidden">
+                    <h2 class="text-3xl font-bold mb-4">{{ paper.Title }}</h2>
+                    <div class="mb-6">
+                        <p class="text-gray-700"><strong>Category:</strong> {{ paper.Category }}</p>
+                        <p class="text-gray-700"><strong>Version:</strong> {{ paper.version }}</p>
+                        <p class="text-gray-700"><strong>Status:</strong> {{ paper.status }}</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <a href="/view_pdf/{{ paper.Paper_ID }}" 
+                           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 inline-block mr-4">
+                            View Paper
+                        </a>
+                        <a href="/download_pdf/{{ paper.Paper_ID }}" 
+                           class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 inline-block">
+                            Download Paper
+                        </a>
+                    </div>
+
+                    <div class="mt-8">
+                        <h3 class="text-xl font-semibold mb-4">Submit Review</h3>
+                        <form onsubmit="submitFeedback(event, '{{ paper.Paper_ID }}')" class="space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Review Status</label>
+                                <div class="flex items-center">
+                                    <input type="checkbox" 
+                                           name="review_status" 
+                                           id="review_status" 
+                                           class="h-4 w-4 text-blue-600 rounded border-gray-300"
+                                           value="1">
+                                    <label for="review_status" class="ml-2 text-sm text-gray-700">
+                                        Cleared for Submission
+                                    </label>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700">Feedback</label>
+                                <textarea name="feedback" rows="6"
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
+                                    placeholder="Enter your feedback here..."></textarea>
+                            </div>
+                            
+                            <button type="submit"
+                                class="bg-green-500 text-white px-6 py-2 rounded hover:bg-green-600">
+                                Submit Review
+                            </button>
+                        </form>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function showPaperDetails(paperId) {
+            document.querySelectorAll('.paper-details').forEach(el => el.classList.add('hidden'));
+            document.getElementById('paper-' + paperId).classList.remove('hidden');
+        }
+
+        function submitFeedback(event, paperId) {
+            event.preventDefault();
+            const form = event.target;
+            const formData = new FormData(form);
+            
+            const reviewStatus = form.querySelector('input[name="review_status"]').checked ? 1 : 0;
+            formData.set('review_status', reviewStatus);
+            formData.append('paper_id', paperId);
+
+            fetch(window.location.href, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    alert('Feedback submitted successfully!');
+                    window.location.reload();
+                } else {
+                    alert('Error submitting feedback: ' + data.message);
+                }
+            })
+            .catch(error => {
+                alert('Error submitting feedback');
+                console.error('Error:', error);
+            });
+        }
+
+        window.onload = function() {
+            const firstPaper = document.querySelector('.paper-details');
+            if (firstPaper) {
+                firstPaper.classList.remove('hidden');
+            }
+        };
+    </script>
+</body>
+</html>

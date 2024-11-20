@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration Page</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f3f4f6;
+        }
+
+        .container {
+            background-color: #ffffff;
+            padding: 2rem;
+            width: 100%;
+            max-width: 400px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 1.5rem;
+        }
+
+        .role-selection {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 1.5rem;
+        }
+
+        .role-selection button {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: #fff;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .role-selection button:hover {
+            background-color: #45a049;
+        }
+
+        .form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form h3 {
+            text-align: center;
+            margin-bottom: 1rem;
+            color: #333;
+        }
+
+        .form label {
+            margin-top: 1rem;
+            color: #555;
+        }
+
+        .form input, .form textarea {
+            width: 100%;
+            padding: 0.75rem;
+            margin-top: 0.5rem;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+
+        .form textarea {
+            resize: none;
+            height: 80px;
+        }
+
+        button[type="submit"] {
+            background-color: #4CAF50;
+            color: #fff;
+            border: none;
+            padding: 0.75rem;
+            margin-top: 1.5rem;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Register your Account</h2>
+
+        <!-- Role Selection -->
+        <div class="role-selection">
+            <button onclick="showForm('authorForm')">Author</button>
+            <button onclick="showForm('reviewerForm')">Reviewer</button>
+        </div>
+
+        <!-- Author Form -->
+        <form id="authorForm" class="form" style="display: none;" onsubmit="submitAuthorForm(event)" method="post">
+            <h3>Author Registration</h3>
+            <label for="authorName">Name:</label>
+            <input type="text" id="authorName" name="name" required>
+
+            <br/><br/>
+            <label for="authorAge">Age:</label>
+            <input type="number" id="authorAge" name="age" required>
+
+            <br/><br/>
+            <label for="authorEmail">Email:</label>
+            <input type="email" id="authorEmail" name="email" required>
+
+            <br/><br/>
+            <label for="authorBio">Bio:</label>
+            <textarea id="authorBio" name="bio" required></textarea>
+
+            <br/><br/>
+            <label for="authorPassword">Password:</label>
+            <input type="password" id="authorPassword" name="password" required>
+
+            <button type="submit">Register as Author</button>
+        </form>
+
+        <!-- Reviewer Form -->
+        <form id="reviewerForm" class="form" style="display: none;" onsubmit="submitReviewerForm(event)" method="post">
+            <h3>Reviewer Registration</h3>
+            <label for="reviewerName">Name:</label>
+            <input type="text" id="reviewerName" name="name" required>
+
+            <br/><br/>
+            <label for="reviewerEmail">Email:</label>
+            <input type="email" id="reviewerEmail" name="email" required>
+
+            <br/><br/>
+            <label for="reviewerConferenceID">Conference ID:</label>
+            <input type="text" id="reviewerConferenceID" name="conference_id" required>
+
+            <br/><br/>
+            <label for="reviewerPassword">Password:</label>
+            <input type="password" id="reviewerPassword" name="password" required>
+
+            <button type="submit">Register as Reviewer</button>
+        </form>
+    </div>
+
+    <script>
+        function showForm(formId) {
+            document.getElementById('authorForm').style.display = 'none';
+            document.getElementById('reviewerForm').style.display = 'none';
+            document.getElementById(formId).style.display = 'block';
+        }
+
+        async function submitAuthorForm(event) {
+            event.preventDefault();
+            const data = {
+                role: "author",
+                name: document.getElementById('authorName').value,
+                age: document.getElementById('authorAge').value,
+                email: document.getElementById('authorEmail').value,
+                bio: document.getElementById('authorBio').value,
+                password: document.getElementById('authorPassword').value
+            };
+
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            alert(result.message);
+            if (result.redirect) window.location.href = "/login";
+        }
+
+        async function submitReviewerForm(event) {
+            event.preventDefault();
+            const data = {
+                role: "reviewer",
+                name: document.getElementById('reviewerName').value,
+                email: document.getElementById('reviewerEmail').value,
+                conference_id: document.getElementById('reviewerConferenceID').value,
+                password: document.getElementById('reviewerPassword').value
+            };
+
+            const response = await fetch('/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            alert(result.message);
+            if (result.redirect) window.location.href = "/login";
+        }
+    </script>
+</body>
+</html>
